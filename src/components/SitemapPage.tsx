@@ -58,13 +58,16 @@ function SitemapAnchor({ item }: { item: SitemapLink }) {
   return <Link href={item.href}>{item.label}</Link>;
 }
 
-export function SitemapPage() {
+export function SitemapPage({
+  title = "Sitemap",
+  lede = "Every page on the Pooptopia site, from services and the service area to contact.",
+}: {
+  title?: string;
+  lede?: string;
+}) {
   return (
     <main className="contact-page sitemap-page">
-      <PageBanner
-        title="Sitemap"
-        lede="Every page on the Pooptopia site, from services and the service area to contact."
-      />
+      <PageBanner title={title} lede={lede} />
       <div className="wrap sitemap-list">
         <p className="sitemap-kicker">Site navigation</p>
         <h1>Pages</h1>

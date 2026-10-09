@@ -105,10 +105,34 @@ export function Header() {
     setOpen(false);
   }, [pathname]);
 
+  useEffect(() => {
+    const syncHeaderHeight = () => {
+      const header = document.querySelector(".site-header");
+      if (!header) return;
+      document.documentElement.style.setProperty(
+        "--header-bar-height",
+        `${Math.round(header.getBoundingClientRect().height)}px`,
+      );
+    };
+    syncHeaderHeight();
+    document.body.classList.toggle("nav-lock", open);
+    if (!open) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("resize", syncHeaderHeight);
+    return () => {
+      document.body.classList.remove("nav-lock");
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("resize", syncHeaderHeight);
+    };
+  }, [open]);
+
   const close = () => setOpen(false);
 
   return (
-    <header className={`site-header${scrolled ? " is-scrolled" : ""}`}>
+    <header className={`site-header${scrolled ? " is-scrolled" : ""}${open ? " is-open" : ""}`}>
       <div className="header-bar">
         <Link href="/" className="logo-link" onClick={close}>
           <img src="/images/logo-mark.png" alt="" className="logo-mark" />
@@ -131,21 +155,33 @@ export function Header() {
             aria-expanded={open}
             onClick={() => setOpen((value) => !value)}
           >
-            {open ? "Close" : "Menu"}
+            Menu
           </button>
         </div>
       </div>
       {open ? (
-        <nav className="mobile-nav" aria-label="Mobile">
-          <NavLinks items={headerNav} pathname={pathname} onNavigate={close} />
-          <a className="header-phone" href="tel:2623512147" onClick={close}>
-            <IconPhone size={26} />
-            (262) 351-2147
-          </a>
-          <a className="mobile-cta" href={REQUEST_URL}>
-            Request Service
-          </a>
-        </nav>
+        <>
+          <button type="button" className="nav-backdrop" aria-label="Close menu" onClick={close} />
+          <nav className="mobile-nav" aria-label="Mobile">
+            <div className="nav-close-row">
+              <button type="button" className="nav-close" aria-label="Close menu" onClick={close}>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M6 6 18 18M18 6 6 18" />
+                </svg>
+              </button>
+            </div>
+            <div className="mobile-nav-scroll">
+              <NavLinks items={headerNav} pathname={pathname} onNavigate={close} />
+              <a className="header-phone" href="tel:2623512147" onClick={close}>
+                <IconPhone size={26} />
+                (262) 351-2147
+              </a>
+              <a className="mobile-cta" href={REQUEST_URL}>
+                Request Service
+              </a>
+            </div>
+          </nav>
+        </>
       ) : null}
     </header>
   );

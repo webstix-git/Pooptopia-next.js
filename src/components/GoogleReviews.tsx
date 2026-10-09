@@ -1,10 +1,15 @@
 "use client";
 
-import { useEffect, useState, type TransitionEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type TransitionEvent } from "react";
 import type { GoogleReviewFeed } from "@/lib/google-reviews";
 import { ReviewCard } from "@/components/ReviewCard";
 
+function columnsFor(width: number) {
+  return width <= 900 ? 1 : 3;
+}
+
 export function GoogleReviews({ feed }: { feed: GoogleReviewFeed }) {
+  const viewportRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
   const [perView, setPerView] = useState(3);
   const [paused, setPaused] = useState(false);
@@ -15,12 +20,17 @@ export function GoogleReviews({ feed }: { feed: GoogleReviewFeed }) {
   const loop = count > perView;
   const slides = loop ? [...feed.reviews, ...feed.reviews.slice(0, perView)] : feed.reviews;
 
-  useEffect(() => {
-    const media = window.matchMedia("(max-width: 900px)");
-    const apply = () => setPerView(media.matches ? 1 : 3);
+  useLayoutEffect(() => {
+    const node = viewportRef.current;
+    if (!node) return;
+    const apply = () => {
+      const next = columnsFor(node.clientWidth);
+      setPerView((current) => (current === next ? current : next));
+    };
     apply();
-    media.addEventListener("change", apply);
-    return () => media.removeEventListener("change", apply);
+    const observer = new ResizeObserver(apply);
+    observer.observe(node);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -108,7 +118,7 @@ export function GoogleReviews({ feed }: { feed: GoogleReviewFeed }) {
               </svg>
             </button>
           ) : null}
-          <div className="google-reviews-viewport">
+          <div className="google-reviews-viewport" ref={viewportRef}>
             <ul
               className={motion ? "google-reviews-track" : "google-reviews-track is-instant"}
               style={{

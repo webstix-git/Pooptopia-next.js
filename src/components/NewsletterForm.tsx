@@ -35,7 +35,8 @@ export function NewsletterForm() {
       </div>
       {sent ? (
         <p className="newsletter-success" role="status">
-          Thanks. Your signup note is ready to send to admin@pooptopia.dog.
+          Thanks. Your signup note is ready to send to{" "}
+          <a href="mailto:admin@pooptopia.dog">admin@pooptopia.dog</a>.
         </p>
       ) : null}
     </form>

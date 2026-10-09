@@ -112,6 +112,15 @@ export function Footer() {
             <Link href="/service-index">AI Readiness Service Index</Link>
             <Link href="/privacy-policy">Privacy Policy</Link>
             <Link href="/ai-policy">AI Policy</Link>
+            <a
+              className="footer-credit"
+              href="https://www.webstix.com/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Website Designed by
+              <img src="/images/webstix-logo.png" alt="webstix" />
+            </a>
           </div>
         </div>
       </div>

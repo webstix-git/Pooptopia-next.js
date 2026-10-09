@@ -150,8 +150,8 @@ export function ContactPage() {
                   ✓
                 </span>
                 <span>
-                  <strong>Thanks.</strong> Your note is ready to send to admin@pooptopia.dog. We will
-                  be in touch.
+                  <strong>Thanks.</strong> Your note is ready to send to{" "}
+                  <a href="mailto:admin@pooptopia.dog">admin@pooptopia.dog</a>. We will be in touch.
                 </span>
               </p>
             ) : null}
